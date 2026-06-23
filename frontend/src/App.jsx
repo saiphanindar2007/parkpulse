@@ -37,7 +37,7 @@ export default function App() {
       .catch((err) => {
         console.error(err);
         setLoadError(
-          "Could not reach the ParkPulse API. Make sure the backend is running on http://localhost:8000 (uvicorn main:app --reload --port 8000)."
+          "Could not reach ParkPulse API."
         );
       });
   }, []);
