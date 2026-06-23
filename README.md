@@ -60,7 +60,7 @@ One finding from the raw data sets the whole project's framing: **99.1% of all r
 
 - **Frontend (Vercel):** https://parkpulse-khaki.vercel.app/
 - **Backend API + docs (Railway):** https://parkpulse-production.up.railway.app/ — Swagger UI at `/docs`
-- **Recorded walkthrough video:** _add your demo video link here_
+- **Recorded walkthrough video:** https://drive.google.com/file/d/1ByZnAj67ZVWGz7e-gnuxhDLl_z7iN6zg/view?usp=sharing
 
 ## Architecture
 
