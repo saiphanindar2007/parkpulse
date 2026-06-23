@@ -68,14 +68,14 @@ A four-layer architecture, fully decoupled so each layer can scale or move indep
 
 ```
 ┌─────────────────┐    ┌──────────────────────┐    ┌─────────────┐    ┌──────────────────────┐
-│   Data Layer     │ →  │  Intelligence Layer   │ →  │  API Layer  │ →  │  Presentation Layer   │
+│   Data Layer    │ →  │  Intelligence Layer  │ →  │  API Layer  │ →  │  Presentation Layer  │
 ├─────────────────┤    ├──────────────────────┤    ├─────────────┤    ├──────────────────────┤
-│ Raw CSV (298K)   │    │ DBSCAN Clustering     │    │ FastAPI     │    │ React + Vite          │
-│ Parquet (clean / │    │ CIS Scoring Engine    │    │ REST/JSON   │    │ Leaflet (maps)        │
-│  exploded)        │    │ LightGBM Forecaster   │    │ over HTTPS  │    │ Recharts (charts)     │
-│ Precomputed        │    │ Anomaly Detector       │    │             │    │                       │
-│  summaries (free-  │    │ OR-Tools VRP Solver    │    │             │    │                       │
-│  tier hosting)      │    │ Confidence Calibration │    │             │    │                       │
+│ Raw CSV (298K)  │    │ DBSCAN Clustering    │    │ FastAPI     │    │ React + Vite         │
+│ Parquet (clean /│    │ CIS Scoring Engine   │    │ REST/JSON   │    │ Leaflet (maps)       │
+│  exploded)      │    │ LightGBM Forecaster  │    │ over HTTPS  │    │ Recharts (charts)    │
+│ Precomputed     │    │ Anomaly Detector     │    │             │    │                      │
+│  summaries      │    │ OR-Tools VRP Solver  │    │             │    │                      │
+│                 │    │ ConfidenceCalibration│    │             │    │                      │
 └─────────────────┘    └──────────────────────┘    └─────────────┘    └──────────────────────┘
 ```
 
