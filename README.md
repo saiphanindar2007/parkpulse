@@ -1,8 +1,8 @@
 # ParkPulse
 
-**AI-Driven Intelligence for Illegal Parking Hotspot Detection & Congestion-Impact Scoring**
+**AI-Driven Spatiotemporal Intelligence for Illegal Parking Hotspot Detection & Congestion-Impact Scoring**
 
-Built for Flipkart GRIDLOCK Hackathon — Problem Statement 1: *"Poor Visibility on Parking-Induced Congestion"* — by team **Sh4kt1^X**.
+Built for Flipkart GRID Hackathon — Problem Statement 1: *"Poor Visibility on Parking-Induced Congestion"* — by team **Sh4kt1^X**.
 
 Repo: [github.com/saiphanindar2007/parkpulse](https://github.com/saiphanindar2007/parkpulse)
 
@@ -44,6 +44,7 @@ One finding from the raw data sets the whole project's framing: **99.1% of all r
 ## What ParkPulse Does
 
 - **24-Hour Time-Lapse Replay** — an animated, scrubbable replay of Bengaluru's single busiest real day (Nov 18, 2023 — 2,858 violations), sweeping minute-by-minute across the actual map at 1×–4× speed. Built entirely from data already in the pipeline; visually proves the daytime-gap finding rather than just stating it — scrub to 1pm and watch the map empty out while the system flags its own blind spot live.
+- **"Click Anywhere" Risk Oracle** — click any point on the map, not just a precomputed hotspot, and get a real, computed congestion-risk score within milliseconds. A Gaussian-weighted spatial interpolation over a `scipy.spatial.cKDTree` index (built once at startup) blends the nearest hotspots' Congestion Impact Scores, calibrated against the real ~430m median spacing between hotspots: clicking within ~80m of a known hotspot returns its exact score, clicking between two hotspots returns a genuinely interpolated value, and clicking far from everything decays toward a low background score. This turns the map from a list of discrete dots into a continuous, explorable risk surface — and it's a moment a reviewer can interact with directly, not just watch.
 - **Hotspot detection** — DBSCAN spatial clustering (haversine distance, automatic two-pass re-split for dense corridors) finds **1,348 violation hotspots** from raw GPS coordinates, independent of administrative junction labels — 49.6% of violations have no junction tagged at all in the source data, and DBSCAN finds these hotspots from density alone.
 - **Congestion Impact Score (CIS)** — a transparent, composite score combining violation volume, severity weight, time-concentration, and a recency/trend component, ranking **245 high-priority hotspots** (eligibility floor: 150+ violations, to avoid statistical noise from sparse locations).
 - **Forecasting** — a LightGBM panel model predicts next-week violation volume per hotspot, with accuracy reported honestly *by volume tier* (≈37% relative error at 200+/week, up to ≈100% at under 10/week) rather than a single misleading blended number.
@@ -67,14 +68,14 @@ A four-layer architecture, fully decoupled so each layer can scale or move indep
 
 ```
 ┌─────────────────┐    ┌──────────────────────┐    ┌─────────────┐    ┌──────────────────────┐
-│   Data Layer    │ →  │  Intelligence Layer  │ →  │  API Layer  │ →  │  Presentation Layer  │
+│   Data Layer     │ →  │  Intelligence Layer   │ →  │  API Layer  │ →  │  Presentation Layer   │
 ├─────────────────┤    ├──────────────────────┤    ├─────────────┤    ├──────────────────────┤
-│ Raw CSV (298K)  │    │ DBSCAN Clustering    │    │ FastAPI     │    │ React + Vite         │
-│ Parquet (clean) │    │ CIS Scoring Engine   │    │ REST/JSON   │    │ Leaflet (maps)       │
-│                 │    │ LightGBM Forecaster  │    │ over HTTPS  │    │ Recharts (charts)    │
-│ Precomputed     │    │ Anomaly Detector     │    │             │    │                      │
-│  summaries      │    │ OR-Tools VRP Solver  │    │             │    │                      │
-│                 │    │Confidence Calibration│    │             │    │                      │
+│ Raw CSV (298K)   │    │ DBSCAN Clustering     │    │ FastAPI     │    │ React + Vite          │
+│ Parquet (clean / │    │ CIS Scoring Engine    │    │ REST/JSON   │    │ Leaflet (maps)        │
+│  exploded)        │    │ LightGBM Forecaster   │    │ over HTTPS  │    │ Recharts (charts)     │
+│ Precomputed        │    │ Anomaly Detector       │    │             │    │                       │
+│  summaries (free-  │    │ OR-Tools VRP Solver    │    │             │    │                       │
+│  tier hosting)      │    │ Confidence Calibration │    │             │    │                       │
 └─────────────────┘    └──────────────────────┘    └─────────────┘    └──────────────────────┘
 ```
 
@@ -85,7 +86,7 @@ Runs fully local on an 8GB RTX 2050 laptop for development, and is deployed live
 The project was built incrementally over a 4-day hackathon timeline, with every stage verified against the real dataset before moving to the next:
 
 | Day | Stage | Scripts | Output |
-|---  |---|---|---|
+|---|---|---|---|
 | 1 | Ingest & clean, EDA | `clean_data.py`, `eda.py` | `violations_clean.parquet`, charts, findings |
 | 2 | Cluster, score, forecast | `cluster_hotspots.py`, `score_hotspots.py`, `forecast_hotspots.py` | `hotspots.parquet`, `hotspot_scored.parquet`, `hotspot_forecast.parquet` |
 | 3 | Backend API + frontend dashboard | `main.py`, React app | Full working dashboard against real data |
@@ -109,6 +110,7 @@ All endpoints are served from `backend/main.py`. Full interactive docs at `/docs
 | `GET /api/backtest` | Temporal holdout validation results |
 | `GET /api/digest` | Auto-generated executive summary |
 | `GET /api/timelapse` | Minute-resolved violation points for the 24-hour replay |
+| `GET /api/risk-at-point?lat=&lon=` | Live spatial interpolation — real-time congestion-risk score for any arbitrary coordinate, not just a precomputed hotspot |
 | `GET /api/stats/summary` | Headline dashboard stats |
 
 ## Frontend Tabs
@@ -116,7 +118,7 @@ All endpoints are served from `backend/main.py`. Full interactive docs at `/docs
 | Tab | What it shows |
 |---|---|
 | ⏱ **24-Hour Replay** | Animated map replay of the busiest real day, with live clock, counter, hourly bar chart, and scrub control |
-| **Hotspot Intelligence** | Map + ranked table + trend chart + Explainability Strip + Intelligence Digest |
+| **Hotspot Intelligence** | Map + ranked table + trend chart + Explainability Strip + Intelligence Digest. Click any empty point on the map to trigger the live Click-Anywhere Risk Oracle. |
 | **Optimized Patrol Plan** | Multi-vehicle routes overlaid on the map, with per-vehicle distance/coverage breakdown |
 | **Anomaly Detector** | List of statistically flagged hotspots, click-through into their trend/explanation |
 | **Backtested ROI** | Headline validation numbers, methodology, and the honest tradeoff discussion |
@@ -124,7 +126,7 @@ All endpoints are served from `backend/main.py`. Full interactive docs at `/docs
 
 ## Tech Stack
 
-**Data & Modeling:** Python 3, pandas, NumPy, scikit-learn (DBSCAN), LightGBM, Google OR-Tools (VRP)
+**Data & Modeling:** Python 3, pandas, NumPy, scikit-learn (DBSCAN), LightGBM, Google OR-Tools (VRP), scipy (spatial KD-tree for the Risk Oracle)
 **Backend & Storage:** FastAPI, Uvicorn, Parquet / SQLite, REST JSON API, deployed on Render
 **Frontend & Visualization:** React + Vite, Leaflet.js, Recharts, deployed via GitHub + Vercel CI/CD
 
@@ -212,7 +214,7 @@ frontend/
   src/
     App.jsx                  # Main dashboard, tab navigation
     TimelapseReplay.jsx      # 24-hour animated replay (default landing tab)
-    HotspotMap.jsx           # Leaflet map with hotspot markers
+    HotspotMap.jsx           # Leaflet map with hotspot markers + Click-Anywhere Risk Oracle layer
     HotspotTable.jsx         # Ranked priority hotspot table
     TrendPanel.jsx           # Per-hotspot weekly trend chart
     SummaryCards.jsx         # Headline dashboard stat cards
@@ -247,4 +249,4 @@ Named explicitly rather than hidden, since judges and contributors alike will pr
 **Sh4kt1^X**
 Venkata Sai Phanindar Damaraju
 
-Built for the Flipkart GRIDLOCK Hackathon, Problem Statement 1.
+Built for the Flipkart GRID Hackathon, Problem Statement 1.
