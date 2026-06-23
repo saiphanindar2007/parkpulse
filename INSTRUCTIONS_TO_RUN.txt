@@ -1,160 +1,87 @@
-# ParkPulse — Instructions to Run
-
-AI-Driven Intelligence for Illegal Parking Hotspots — Bengaluru
-
-This package contains the full source code and the processed data outputs
-from the Day 1-4 pipeline already run. You do NOT need to re-run the data
-pipeline to see the dashboard working — it ships with real, pre-computed
-results from 298,450 actual Bengaluru Traffic Police violation records.
-
---------------------------------------------------------------------------
-WHAT'S INCLUDED
---------------------------------------------------------------------------
-backend/
-  clean_data.py          Day 1 — data cleaning
-  eda.py                 Day 1 — exploratory analysis + charts
-  cluster_hotspots.py    Day 2 — DBSCAN hotspot clustering
-  score_hotspots.py      Day 2 — Congestion Impact Score
-  forecast_hotspots.py   Day 2 — LightGBM next-week forecasting
-  optimize_routes.py     Day 4 — OR-Tools patrol route optimization
-  backtest_roi.py        Day 4 — temporal backtest validation
-  detect_anomalies.py    Day 4 — robust z-score anomaly detection
-  add_confidence_tags.py Day 4 — forecast confidence calibration
-  main.py                FastAPI backend serving all of the above
-  requirements.txt       Exact Python package versions used
-  data/                  Pre-computed outputs (parquet/json files) --
-                         the dashboard reads directly from these, so the
-                         scripts above do NOT need to be re-run to demo it
-
-frontend/
-  src/                   React + Vite dashboard (5 tabs)
-  package.json           Node dependencies
-
-NOTE: backend/data/raw_violations.csv (the original 105MB dataset) and a
-few large intermediate files are EXCLUDED from this package to keep it
-under 50MB. The dashboard works fully without them, since it reads only
-the smaller processed outputs. If you want to re-run the pipeline from
-scratch, you'll need to re-download the original HackerEarth dataset and
-place it at backend/data/raw_violations.csv before running clean_data.py.
-
---------------------------------------------------------------------------
-PREREQUISITES
---------------------------------------------------------------------------
-- Python 3.10+ (3.12 recommended)
-- Node.js 18+ and npm
-- ~500MB free disk space
-
---------------------------------------------------------------------------
-STEP 1 — BACKEND SETUP
---------------------------------------------------------------------------
-Open a terminal in the `backend` folder:
-
-    cd backend
-    python -m venv venv
-
-Activate the virtual environment:
-    Windows:      venv\Scripts\activate
-    Mac/Linux:    source venv/bin/activate
-
-Install dependencies:
-    pip install -r requirements.txt
-
-(If `ortools` fails to install on Windows, see the README's troubleshooting
-section -- it requires the Microsoft Visual C++ Redistributable, which most
-systems already have.)
-
---------------------------------------------------------------------------
-STEP 2 — START THE BACKEND
---------------------------------------------------------------------------
-Still inside `backend`, with the venv active:
-
-    python -m uvicorn main:app --reload --port 8000
-
-Wait for this exact line to appear:
-    Loaded 1348 hotspots, 270674 point records, 298450 total violations
-    INFO:     Application startup complete.
-
-Leave this terminal running. Verify it works by opening this URL in any
-browser: http://127.0.0.1:8000/docs
-You should see the interactive API documentation (Swagger UI) with all
-endpoints listed.
-
---------------------------------------------------------------------------
-STEP 3 — FRONTEND SETUP (new terminal)
---------------------------------------------------------------------------
-    cd frontend
-    npm install
-
---------------------------------------------------------------------------
-STEP 4 — START THE FRONTEND
---------------------------------------------------------------------------
-    npm run dev
-
-You'll see:
-    VITE ready in ___ ms
-    Local: http://localhost:5173/
-
-Open that URL in your browser.
-
---------------------------------------------------------------------------
-STEP 5 — USING THE DASHBOARD
---------------------------------------------------------------------------
-Five tabs across the top:
-
-1. Hotspot Intelligence  - Map + ranked table + click any hotspot to see
-                            its trend chart and full score explanation
-2. Optimized Patrol Plan - Multi-vehicle routes solved via OR-Tools
-3. Anomaly Detector       - Statistically flagged spikes/drops; click any
-                            row to jump back to its full detail view
-4. Backtested ROI         - Held-out validation of the ranking methodology
-5. Digital Twin           - Drag the sliders (vehicles / distance budget)
-                            and click "Run Simulation" -- this re-solves
-                            the REAL routing problem live, typically
-                            taking 1-3 seconds. Not a precomputed demo.
-
---------------------------------------------------------------------------
+ParkPulse -- Instructions to Run
+-----------------------------------------------
+Two ways to use this submission:
+1.	Visit the live deployed demo - no setup required.
+2.	Run it locally from the source code - full instructions below.
+---------------------------------------------
+LIVE DEMO (no setup required)
+---------------------------------------------
+Frontend (dashboard): <add your deployed Vercel URL here>
+Backend API + docs: <add your deployed Render/Railway URL here> + /docs
+The dashboard loads directly on the "24-hour Replay" tab. Click Play or daytime-enforcement-gap finding visualized live.
+-----------------------------------------------------
+RUNNING LOCALLY FROM SOURCE
+-----------------------------------------------------
+Requirements:
+•	Python 3.10 or later
+•	Node.js 18 or later + npm
+•	~500MB free disk space
+•	No GPU required
+The submitted source code already includes all pre-computed data files (backend/data/.parquet, *.json). You do NOT need to re-run the data pipeline to see the dashboard working - only the backend API server and the frontend dev server need to be started.
+Step-1 --- Backend Setup
+-------------------------------------
+cd backend
+python -m venv venv
+-- Activate the virtual environment:
+1.	For Windows: venv\Scripts\activate
+2.	For macOS/Linux: source venv\bin\activate
+pip install -r requirements.txt
+Step-2 --- Start the backend server
+--------------------------------------------------
+uvicorn main:app --reload --port 8000
+Wait for this line in the terminal before continuing: 
+Loaded 1348 hotspots 13604 weekly trend rows ... 
+INFO: Application startup complete.
+Verify it's working by opening in a browser:
+https://127.0.0.1:8000/docs
+(this should show the interactive Swagger API documentation)
+NOTE (Windows only): if uvicorn.exe is blocked by a Device Guard/Smart App Control policy, run it as a Python module instead:
+python -m uvicorn main:app --reload --port 8000
+Step-3 --- Frontend setup (open a second terminal)
+-------------------------------------------------------------------------
+cd frontend
+npm install
+Step-4 --- Start the frontend server
+-------------------------------------------------
+npm run dev
+Open the URL it prints, typically:
+http://localhost:5173
+Step-5 --- Use the dashboard 
+-------------------------------------------
+The app opens on the "24-Hour Replay" tab by default. Six tabs are available across the top:
+-- 24-Hour Replay: Animated Map Peplay, Scrub to ~1pm for the daytime-gap finding
+-- Hotspot Intelligence: Map, Ranked Table, Trand Chart, Explainability Strip, Intelligence Digest
+-- Optimized Patrol Plan: OR-Tools multi-vehicle routing
+-- Anomaly Detector: Statistically flagged spikes/drops
+-- Backtested ROI: Held-out validation results
+-- Digital Twin: Live what-if routing simulator
+Both servers (backend on port 8000, frontend on port 5173) must be running at the same time for the dashboard to load data correctly.
+-----------------------------------------------------------------------------------
+(OPTIONAL) REGENERATING ALL DATA FROM SCRATCH
+-----------------------------------------------------------------------------------
+Not required to run the demo - the submitted source already includes all precomputed outputs. Only needed if you want to re-derive everything from the raw dataset. Run this in exact order from inside backend/, with the venv activated:
+python clean_data.py
+python cluster_hotspots.py
+python score_hotspots.py
+python forecast_hotspots.py
+python optimize_routes.py
+python backtest_roi.py
+python detect_anomalies.py
+python add_confidence_tags.py
+python precompute_timelapse.py
+python precompute_summary.py
+The raw dataset CSV is expected at:
+backend/data/raw_violations.csv
+-------------------------------
 TROUBLESHOOTING
---------------------------------------------------------------------------
-"Could not reach the ParkPulse API" banner on the frontend
-  -> The backend (Step 2) isn't running, or isn't on port 8000. Check its
-     terminal for errors.
-
-Backend prints "WARNING: data/____ not found"
-  -> One of the pre-computed data files is missing. Re-check that the
-     `backend/data/` folder from this package was extracted correctly --
-     it should contain several .parquet files and a .json file.
-
-"uvicorn.exe was blocked by your organization's Device Guard policy"
-(Windows only)
-  -> Use `python -m uvicorn main:app --reload --port 8000` instead of
-     calling uvicorn.exe directly -- this runs it through the already-
-     trusted python.exe and avoids the block entirely.
-
-Digital Twin "Run Simulation" button shows an error
-  -> Wait the full 15 seconds before assuming it failed -- the solver
-     genuinely takes 1-3 seconds, and slower machines may take longer.
-     If it persists, confirm `ortools` installed correctly: run
-     `python -c "import ortools; print('OK')"` inside the activated venv.
-
---------------------------------------------------------------------------
-RE-RUNNING THE FULL DATA PIPELINE FROM SCRATCH (OPTIONAL)
---------------------------------------------------------------------------
-Only needed if you want to regenerate everything from the raw dataset
-rather than using the included pre-computed outputs.
-
-1. Download the dataset and place it at: backend/data/raw_violations.csv
-2. From the `backend` folder, with venv active, run in order:
-
-    python clean_data.py
-    python eda.py
-    python cluster_hotspots.py
-    python score_hotspots.py
-    python forecast_hotspots.py
-    python optimize_routes.py
-    python backtest_roi.py
-    python detect_anomalies.py
-    python add_confidence_tags.py
-
-3. Restart the backend (Step 2). All numbers will regenerate from the raw
-   data -- exact figures may vary slightly run-to-run due to forecasting
-   model randomness, but should be very close to what's documented.
+-------------------------------
+"FileNotFoundError: data/hotspot_weekly.parquet" on backend startup
+    -- Run: python precompute_summary.py (from inside backend/, with violations_clean.parquet and hotspots.parquet already present)
+"Could not reach the ParkPulse API" banner in the dashboard 
+    -- The backend server isn't running, or isn't on port 8000. Go back to Step 2 and confirm it's still alive in it's terminal
+Map tiles don't load:
+   -- Requires normal internet access (tiles are fetched from OpenStreetMap); not a code issue if you're on a restricted network.
+uvicorn.exe blocked by an organization/Device Guard policy (Windows)
+   -- Run: python -m uvicorn main:app --reload --port 8000 instead of calling uvicorn.exe directly.
+pip install errors on Windows
+   -- make sure the virtual environment is activated (you should see "(venv)" at the start of your terminal prompt) before running pip install -r requirements.txt.

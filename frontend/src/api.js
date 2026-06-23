@@ -40,3 +40,8 @@ export async function fetchTimelapse() {
   const { data } = await api.get("/api/timelapse");
   return data;
 }
+
+export async function fetchRiskAtPoint(lat, lon) {
+  const { data } = await api.get("/api/risk-at-point", { params: { lat, lon } });
+  return data;
+}
