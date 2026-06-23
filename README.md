@@ -127,7 +127,9 @@ All endpoints are served from `backend/main.py`. Full interactive docs at `/docs
 ## Tech Stack
 
 **Data & Modeling:** Python 3, pandas, NumPy, scikit-learn (DBSCAN), LightGBM, Google OR-Tools (VRP), scipy (spatial KD-tree for the Risk Oracle)
-**Backend & Storage:** FastAPI, Uvicorn, Parquet / SQLite, REST JSON API, deployed on Render
+
+**Backend & Storage:** FastAPI, Uvicorn, Parquet / SQLite, REST JSON API, deployed on Railway
+
 **Frontend & Visualization:** React + Vite, Leaflet.js, Recharts, deployed via GitHub + Vercel CI/CD
 
 Chosen deliberately to run comfortably on an 8GB RAM / RTX 2050 laptop with **zero GPU dependency** for any part of the pipeline — clustering and gradient-boosted forecasting at this data scale don't need one, and OR-Tools' solver is compiled C++ under a thin Python layer.
