@@ -6,8 +6,8 @@ Two ways to use this submission:
 ---------------------------------------------
 LIVE DEMO (no setup required)
 ---------------------------------------------
-Frontend (dashboard): <add your deployed Vercel URL here>
-Backend API + docs: <add your deployed Render/Railway URL here> + /docs
+Frontend (dashboard): https://parkpulse-khaki.vercel.app/
+Backend API + docs: https://parkpulse-production.up.railway.app + /docs
 The dashboard loads directly on the "24-hour Replay" tab. Click Play or daytime-enforcement-gap finding visualized live.
 -----------------------------------------------------
 RUNNING LOCALLY FROM SOURCE

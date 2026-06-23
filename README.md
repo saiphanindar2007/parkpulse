@@ -58,8 +58,8 @@ One finding from the raw data sets the whole project's framing: **99.1% of all r
 
 ## Live Demo
 
-- **Frontend (Vercel):** _add your deployed Vercel URL here_
-- **Backend API + docs (Render):** _add your deployed Render URL here_ — Swagger UI at `/docs`
+- **Frontend (Vercel):** https://parkpulse-khaki.vercel.app/
+- **Backend API + docs (Railway):** https://parkpulse-production.up.railway.app/ — Swagger UI at `/docs`
 - **Recorded walkthrough video:** _add your demo video link here_
 
 ## Architecture
@@ -79,7 +79,7 @@ A four-layer architecture, fully decoupled so each layer can scale or move indep
 └─────────────────┘    └──────────────────────┘    └─────────────┘    └──────────────────────┘
 ```
 
-Runs fully local on an 8GB RTX 2050 laptop for development, and is deployed live with **Render** (backend) + **Vercel** (frontend). The backend's data-loading layer was deliberately refactored to a precomputed, memory-light footprint (summary JSON + weekly-aggregated Parquet instead of the full 298K-row dataframe in memory) to fit comfortably within free-tier hosting RAM limits.
+Runs fully local on an 8GB RTX 2050 laptop for development, and is deployed live with **Railway** (backend) + **Vercel** (frontend). The backend's data-loading layer was deliberately refactored to a precomputed, memory-light footprint (summary JSON + weekly-aggregated Parquet instead of the full 298K-row dataframe in memory) to fit comfortably within free-tier hosting RAM limits.
 
 ## Data Pipeline (Day-by-Day Build)
 
@@ -171,12 +171,12 @@ python precompute_summary.py   # required for the memory-optimized deployment bu
 
 ## Deployment
 
-The backend is deployed on **Render** and the frontend on **Vercel**, connected via GitHub for continuous deployment on push.
+The backend is deployed on **Railway** and the frontend on **Vercel**, connected via GitHub for continuous deployment on push.
 
 - The backend's data-loading layer is intentionally lightweight for free-tier hosting: `precompute_summary.py` converts the full 298,450-row dataset into a small `summary_stats.json` and a weekly-aggregated `hotspot_weekly.parquet` (a ~95% size reduction), so `main.py` never loads the full raw dataframe into memory at runtime.
 - The 24-Hour Replay similarly reads from a tiny ~150KB precomputed file (`precompute_timelapse.py`) rather than querying the full dataset live.
 - CORS is configured in `main.py` to allow the deployed frontend origin; update the allowed-origins list there if you redeploy to a different domain.
-- Frontend API base URL is configurable via the `VITE_API_BASE_URL` environment variable, so the same build can point at `localhost:8000` in development and the deployed Render URL in production.
+- Frontend API base URL is configurable via the `VITE_API_BASE_URL` environment variable, so the same build can point at `localhost:8000` in development and the deployed Railway URL in production.
 
 ## Validation & Honesty Notes
 
