@@ -1,0 +1,15 @@
+ParkPulse — Day 1 EDA Findings
+========================================
+
+1. Top violation: 'WRONG PARKING' with 164,977 occurrences (47.3% of all violation instances).
+
+2. Only 2,686 records (0.9%) occur between 10am-6pm, vs 295,764 (99.1%) outside that window — enforcement is heavily night/early-morning skewed, likely reflecting patrol/camera deployment timing rather than actual daytime violation rates. This is a key gap ParkPulse should highlight.
+
+3. 54 unique police stations and 168 named junctions are represented. 147,885 records (49.6%) have no specific junction tagged — these will rely purely on lat/long clustering.
+
+4. Most common vehicle type: SCOOTER (94,856 records, 31.8%).
+
+5. Data spans 2023-11-09 to 2024-04-08 (152 distinct days).
+
+6. Validation status breakdown: {'approved': np.int64(115400), 'rejected': np.int64(49754), 'created1': np.int64(7044), 'processing': np.int64(678), 'duplicate': np.int64(320)}. 125,254 records have no validation status recorded.
+

@@ -1,0 +1,41 @@
+{
+  "train_window": {
+    "start": "2023-11-09",
+    "end": "2024-02-04",
+    "n_violations": 179068
+  },
+  "test_window": {
+    "start": "2024-02-04",
+    "end": "2024-04-08",
+    "n_violations": 119377
+  },
+  "top_k": 50,
+  "total_grid_cells": 2250,
+  "coverage_by_volume": {
+    "parkpulse_cis_pct": 40.9,
+    "naive_volume_pct": 43.6,
+    "random_baseline_pct": 2.1
+  },
+  "coverage_by_severity_weight": {
+    "parkpulse_cis_pct": 41.5,
+    "naive_volume_pct": 42.6,
+    "random_baseline_pct": 2.1
+  },
+  "coverage_high_severity_only": {
+    "parkpulse_cis_pct": 44.2,
+    "naive_volume_pct": 37.9,
+    "random_baseline_pct": 2.2,
+    "cis_relative_improvement_pct": 16.8,
+    "definition": "Violations weighted >= 8 (footpath, road-crossing, traffic-light/zebra, main-road, double-parking, one-way) -- the types that most directly choke traffic flow."
+  },
+  "lift_by_volume": {
+    "vs_random": 19.24,
+    "vs_naive_volume": 0.94
+  },
+  "lift_by_severity": {
+    "vs_random": 19.67,
+    "vs_naive_volume": 0.98
+  },
+  "roi_assumption_minutes_per_action": 8,
+  "roi_note": "CIS covers slightly fewer raw future violations than naive volume ranking (both lists overlap ~80% on the obvious mega-hotspots), but covers +17% more of the HIGH-SEVERITY violation types specifically (footpath/road-crossing/main-road/double-parking/one-way) -- exactly the tradeoff CIS is designed to make. Patrol-hours figures use an illustrative 8-minutes-per-enforcement-action assumption, NOT a value derived from the dataset (which has no officer-time field)."
+}

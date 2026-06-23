@@ -1,0 +1,13 @@
+{
+  "total_violations": 298450,
+  "date_range": {
+    "start": "2023-11-09",
+    "end": "2024-04-08"
+  },
+  "peak_hour": 5,
+  "top_vehicle_type": "SCOOTER",
+  "top_vehicle_type_count": 94856,
+  "daytime_violations_pct": 0.9,
+  "named_junctions": 168,
+  "police_stations": 54
+}

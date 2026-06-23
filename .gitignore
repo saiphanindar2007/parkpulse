@@ -1,0 +1,28 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.log
+
+# Only the raw CSV is excluded -- it's 105MB+ (over/near GitHub's 100MB hard
+# limit) and is NOT needed at runtime; main.py only reads the processed
+# parquet files below it, all of which ARE committed despite their size
+# (hotspots.parquet ~20MB, violations_clean.parquet ~19MB) because the
+# deployed API loads them directly at startup and has nowhere else to get
+# them without re-running the full Day 1 pipeline on every deploy.
+backend/data/raw_violations.csv
+backend/data/violations_exploded.parquet
+backend/data/figures/
+
+# Node
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
